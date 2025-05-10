@@ -18,6 +18,26 @@ export default function InstallPrompt() {
         return null // Don't show install button if already installed
     }
 
+    function unregisterServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then((registrations) => {
+                for (const registration of registrations) {
+                    registration.unregister().then((boolean) => {
+                        if (boolean) {
+                            console.log('Service worker unregistered successfully');
+                        } else {
+                            console.log('Service worker unregistration failed');
+                        }
+                    }).catch((error) => {
+                        console.error('Service worker unregistration failed:', error);
+                    });
+                }
+            }).catch((error) => {
+                console.error('Error getting service worker registrations:', error);
+            });
+        }
+    }
+
     return (
         <div>
             <h3>Install App</h3>
@@ -36,6 +56,12 @@ export default function InstallPrompt() {
                     </span>.
                 </p>
             )}
+
+            <div>
+                <button className={'bg-red p-4'} onClick={unregisterServiceWorker}>
+                    Unregister Service Worker
+                </button>
+            </div>
         </div>
     )
 }
